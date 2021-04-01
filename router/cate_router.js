@@ -5,8 +5,9 @@ const jwt =require('jsonwebtoken')
 router.use(express.urlencoded())
 
 //写接口
-router.GET('/my/article/cates',(req,res)=>{
+router.get('/my/article/cates',(req,res)=>{
     console.log('收到的参数',req.body);
     
 })
 
+module.exports = router

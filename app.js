@@ -1,32 +1,41 @@
-//引入 exp 三部曲
-const express =require('express')
+// 1.0 三行代码，创建express服务器并开启监听
+const express = require("express")
+const server = express()
 
- const server=express()
- const jwt = require('express-jwt');
-
-
-//跨域处理
-const cors =require('cors')
+// 2.0 开启cros跨域
+/*  
+ 请使用  npm i cors --save 安装cros包
+*/
+const cors = require('cors')
 server.use(cors())
-//静态托管
-server.use('/uploads',express.static('uploads'))
 
+// 3.0 设置uploads为静态资源目录
+server.use('/uploads', express.static('uploads'))
+
+// 4.0 设置jwt
+/*  
+ 请使用  npm i express-jwt --save 安装express-jwt包
+*/
+// const jwt = require('express-jwt');
+// app.use(jwt().unless());
 // jwt() 用于解析token，并将 token 中保存的数据 赋值给 req.user
 // unless() 约定某个接口不需要身份认证
-server.use(jwt({
-    secret: 'bignews1', // 生成token时的 钥匙，必须统一
-    algorithms: ['HS256'] // 必填，加密算法，无需了解
-  }).unless({
-    path: ['/user/login', '/user/register', /^\/uploads\/.*/] // 除了这两个接口，其他都需要认证
-  }));
-//路由中间件
-const categoriesRouter = require('./router/categories_router.js')
+// server.use(jwt({
+//   secret: 'bignews1', // 生成token时的 钥匙，必须统一
+//   algorithms: ['HS256'] // 必填，加密算法，无需了解
+// }).unless({
+//   path: ['/api/login','/api/register', /^\/uploads\/.*/] // 除了这两个接口，其他都需要认证
+// }));
+
+// 5.0 通过路由中间件来 加载不同的路由
 const userRouter = require('./router/user_router.js')
-server.use('/categories', heroRouter)
-server.use('/user', userRouter)
+const accountRouter = require('./router/account_router.js')
+const cateRouter = require('./router/cate_router.js')
+server.use('/api', accountRouter)
+server.use('/my', userRouter)
+server.use('/my/article', cateRouter)
 
-
-// 错误处理中间件
+// // 6.0 错误处理中间件用来检查token合法性
 server.use((err, req, res, next) => {
     console.log('有错误', err)
     if (err.name === 'UnauthorizedError') {
@@ -35,20 +44,7 @@ server.use((err, req, res, next) => {
     }
   });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
- server.listen(3003,()=>{
-     console.log('3003号技师为你服务');
-     
- })
+// 1.0.1 开启监听
+server.listen(3000, () => {
+    console.log("您的服务器已经在3000端口就绪了");
+  })
